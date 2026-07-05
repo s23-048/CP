@@ -1,3 +1,54 @@
+Question 1: 3983. Sum of Integers with Maximum Digit Range
+Difficulty: Easy
+------------------------------------------------------------
+
+Approach:
+1. Write a helper function to compute the digit range of a number (max digit - min digit).
+2. Iterate through nums, compute the digit range for each number, and track the maximum digit range.
+3. Iterate again and sum all numbers whose digit range equals the maximum.
+
+Time Complexity: O(N × D)
+N = Size of array
+D = Number of digits in each number
+
+Space Complexity: O(N)
+
+C++ Solution:
+
+class Solution {
+public:
+    int fun(int num){
+        int mini=INT_MAX;
+        int maxi=INT_MIN;
+
+        while(num){
+            int digit=num%10;
+            mini=min(mini,digit);
+            maxi=max(maxi,digit);
+            num=num/10;
+        }
+        return maxi-mini;
+    }
+    int maxDigitRange(vector<int>& nums) {
+        vector<int>digi(nums.size());
+        int maxi=INT_MIN;
+        int ans=0;
+        for(int i=0;i<nums.size();i++){
+            int temp=fun(nums[i]);
+            maxi=max(temp,maxi);
+            digi[i]=temp;
+        }
+        for(int i=0;i<nums.size();i++){
+            if(digi[i]==maxi){
+                ans+=nums[i];
+            }
+        }
+        return ans;
+    }
+};
+
+------------------------------------------------------------
+
 Question 2: 3984. Divisible Game
 Difficulty: Medium
 ------------------------------------------------------------
