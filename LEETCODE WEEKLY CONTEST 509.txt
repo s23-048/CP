@@ -1,0 +1,77 @@
+Question 2: 3984. Divisible Game
+Difficulty: Medium
+------------------------------------------------------------
+
+Approach:
+1. Find every possible divisor (>1) that appears as a factor of any number in the array.
+2. For every candidate divisor k:
+      • If nums[i] is divisible by k, treat it as +nums[i].
+      • Otherwise, treat it as -nums[i].
+3. This converts the problem into finding the maximum subarray sum.
+4. Apply Kadane's Algorithm to obtain the maximum score difference for that divisor.
+5. Keep track of:
+      • Maximum score difference.
+      • Smallest divisor k producing that maximum score.
+6. Return:
+      (Maximum Score Difference × k) mod (1e9 + 7).
+
+Time Complexity: O(M × N)
+M = Number of unique candidate divisors
+N = Size of array
+
+Space Complexity: O(M)
+
+C++ Solution:
+
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    using ll = long long;
+
+    int divisibleGame(vector<int>& nums) {
+        int n = nums.size();
+
+        unordered_set<int> cad;
+        cad.insert(2);
+
+        for(auto it : nums){
+            for(int i = 2; i * i <= it; i++){
+                if(it % i == 0){
+                    cad.insert(i);
+                    cad.insert(it / i);
+                }
+            }
+            if(it > 1)
+                cad.insert(it);
+        }
+
+        long long maxi = INT_MIN;
+        int bestK = 2;
+
+        for(int k : cad){
+            long long cur = LLONG_MIN;
+            long long sum = 0;
+
+            for(int x : nums){
+                long long val = (x % k == 0) ? x : -x;
+
+                if(sum < 0)
+                    sum = val;
+                else
+                    sum += val;
+
+                cur = max(cur, sum);
+            }
+
+            if(cur > maxi || (cur == maxi && k < bestK)){
+                maxi = cur;
+                bestK = k;
+            }
+        }
+
+        long long ans = ((maxi % mod + mod) % mod);
+        ans = (ans * bestK) % mod;
+
+        return (int)ans;
+    }
+};
